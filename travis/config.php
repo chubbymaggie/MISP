@@ -1,6 +1,6 @@
 <?php
 $config = array (
-  'debug' => 0,
+  'debug' => 1,
   'Security' =>
   array (
     'level' => 'medium',
@@ -10,12 +10,12 @@ $config = array (
   ),
   'MISP' =>
   array (
-    'baseurl' => 'http://localhost',
+    'baseurl' => 'http://misp.local',
     'footerpart1' => 'Powered by MISP',
     'footerpart2' => '&copy; Belgian Defense CERT & NCIRC',
     'org' => 'ORGNAME',
     'showorg' => true,
-    'background_jobs' => true,
+    'background_jobs' => false,
     'cached_attachments' => false,
     'email' => 'email@address.com',
     'contact' => 'email@address.com',

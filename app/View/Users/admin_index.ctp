@@ -24,81 +24,25 @@
 		}
 	?>
 	<div class="tabMenuFixedContainer" style="display:inline-block;">
-	<span class="tabMenuFixed tabMenuFixed<?php echo $tab; ?> tabMenuSides">
-		<span id="create-button" title="Modify filters" class="icon-search useCursorPointer" onClick="getPopup('<?php echo $urlparams;?>', 'admin/users', 'filterUserIndex');"></span>
-	</span>
-	<?php if ($filtered):
-		foreach ($passedArgsArray as $k => $v):?>
-			<span class="tabMenuFixed tabMenuFixedElement">
-				<?php echo h(ucfirst($k)) . " : " . h($v); ?>
-			</span>
-		<?php endforeach; ?>
-	<span class="tabMenuFixed tabMenuFixedRight tabMenuSides">
-		<?php echo $this->Html->link('', array('controller' => 'users', 'action' => 'index', 'admin' => true), array('class' => 'icon-remove', 'title' => 'Remove filters'));?>
-	</span>
-	<?php endif;?>
+		<span class="tabMenuFixed tabMenuFixed<?php echo $tab; ?> tabMenuSides">
+			<span id="create-button" title="Modify filters" role="button" tabindex="0" aria-label="Modify filters" class="icon-search useCursorPointer" onClick="getPopup('<?php echo h($urlparams);?>', 'admin/users', 'filterUserIndex');"></span>
+		</span>
+		<?php if ($filtered):
+			foreach ($passedArgsArray as $k => $v):?>
+				<span class="tabMenuFixed tabMenuFixedElement">
+					<?php echo h(ucfirst($k)) . " : " . h($v); ?>
+				</span>
+			<?php endforeach; ?>
+		<span class="tabMenuFixed tabMenuFixedRight tabMenuSides">
+			<?php echo $this->Html->link('', array('controller' => 'users', 'action' => 'index', 'admin' => true), array('class' => 'icon-remove', 'title' => 'Remove filters'));?>
+		</span>
+		<?php endif;?>
+		<span id="quickFilterButton" role="button" tabindex="0" aria-label="Filter user index" class="tabMenuFilterFieldButton useCursorPointer" onClick="quickFilter(<?php echo h($passedArgs); ?>, '<?php echo $baseurl . '/users/admin_index'; ?>');">Filter</span>
+		<input class="tabMenuFilterField" type="text" id="quickFilterField"></input>
 	</div>
-	<table class="table table-striped table-hover table-condensed">
-		<tr>
-			<th><?php echo $this->Paginator->sort('id');?></th>
-			<th><?php echo $this->Paginator->sort('org_ci', 'Org');?></th>
-			<th><?php echo $this->Paginator->sort('role_id', 'Role');?></th>
-			<th><?php echo $this->Paginator->sort('email');?></th>
-			<th><?php echo $this->Paginator->sort('autoalert');?></th>
-			<th><?php echo $this->Paginator->sort('contactalert');?></th>
-			<th><?php echo $this->Paginator->sort('gpgkey');?></th>
-			<th><?php echo $this->Paginator->sort('nids_sid');?></th>
-			<th><?php echo $this->Paginator->sort('termsaccepted');?></th>
-			<th><?php echo $this->Paginator->sort('newsread');?></th>
-			<th><?php echo $this->Paginator->sort('disabled');?></th>
-			<th class="actions"><?php echo __('Actions');?></th>
-		</tr>
-		<?php
-	foreach ($users as $user): ?>
-		<tr>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo h($user['User']['id']); ?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<a href="/organisations/view/<?php echo $user['Organisation']['id'];?>"><?php echo h($user['Organisation']['name']); ?>&nbsp;</a></td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo $this->Html->link($user['Role']['name'], array('controller' => 'roles', 'action' => 'view', $user['Role']['id'])); ?></td>
-			<td ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo h($user['User']['email']); ?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo $user['User']['autoalert']? 'Yes' : 'No'; ?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo $user['User']['contactalert']? 'Yes' : 'No'; ?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo $user['User']['gpgkey']? 'Yes' : 'No'; ?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo h($user['User']['nids_sid']); ?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php
-		if (h($user['User']['termsaccepted']) == 1) {
-					echo "Yes";
-		} else {
-					echo "No";
-		}
-			?>&nbsp;</td>
-			<td class="short" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo h($user['User']['newsread']); ?>&nbsp;</td>
-			<td class="short <?php if ($user['User']['disabled']) echo 'red bold';?>" ondblclick="document.location ='<?php echo $this->Html->url(array('admin' => true, 'action' => 'view', $user['User']['id']), true);?>';">
-			<?php echo ($user['User']['disabled'] ? 'Yes' : 'No'); ?></td>
-			<td class="short action-links">
-				<?php
-		if (($isAclAdmin && (($user['User']['org_id'] == $me['org_id'])) || ('1' == $me['id'])) || ($isSiteAdmin)) {
-		?>
-			<span class="icon-refresh useCursorPointer" onClick="initiatePasswordReset('<?php echo $user['User']['id']; ?>');"></span>
-		<?php
-					echo $this->Html->link('', array('admin' => true, 'action' => 'edit', $user['User']['id']), array('class' => 'icon-edit', 'title' => 'Edit'));
-					echo $this->Form->postLink('', array('admin' => true, 'action' => 'delete', $user['User']['id']), array('class' => 'icon-trash', 'title' => 'Delete'), __('Are you sure you want to delete # %s? It is highly recommended to never delete users but to disable them instead.', $user['User']['id']));
-		}?>
-				<?php echo $this->Html->link('', array('admin' => true, 'action' => 'view', $user['User']['id']), array('class' => 'icon-list-alt', 'title' => 'View')); ?>
-			</td>
-		</tr>
 	<?php
-endforeach; ?>
-	</table>
+		echo $this->element('Users/userIndexTable');
+	?>
 	<p>
     <?php
     echo $this->Paginator->counter(array(
@@ -116,6 +60,6 @@ endforeach; ?>
         </ul>
     </div>
 </div>
-<?php 
+<?php
 	echo $this->element('side_menu', array('menuList' => 'admin', 'menuItem' => 'indexUser'));
 ?>

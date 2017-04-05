@@ -35,13 +35,13 @@ echo $this->Form->create('Attribute', array('id', 'url' => '/attributes/attribut
 			<table>
 				<tr>
 				<td style="vertical-align:top">
-					<span id="submitButton" class="btn btn-primary" onClick="submitPopoverForm('<?php echo $event_id;?>', 'replaceAttributes')">Submit</span>
+					<span id="submitButton" class="btn btn-primary" title="Replace attributes" role="button" tabindex="0" aria-label="Replaceattributes" onClick="submitPopoverForm('<?php echo $event_id;?>', 'replaceAttributes')">Submit</span>
 				</td>
 				<td style="width:540px;">
 					<p style="color:red;font-weight:bold;display:none;text-align:center" id="warning-message">Warning: You are about to share data that is of a classified nature (Attribution / targeting data). Make sure that you are authorised to share this.</p>
 				</td>
 				<td style="vertical-align:top;">
-					<span class="btn btn-inverse" id="cancel_attribute_add">Cancel</span>
+					<span class="btn btn-inverse" id="cancel_attribute_add" title="Cancel" role="button" tabindex="0" aria-label="Cancel">Cancel</span>
 				</td>
 				</tr>
 			</table>
@@ -94,7 +94,7 @@ foreach ($categoryDefinitions as $category => $def) {
 	echo "formInfoValues['" . addslashes($category) . "'] = \"" . addslashes($info) . "\";\n"; // as we output JS code we need to add slashes
 }
 ?>
-	
+
 $(document).ready(function() {
 	$("#AttributeType, #AttributeCategory").on('mouseover', function(e) {
 	    var $e = $(e.target);
@@ -144,10 +144,10 @@ $(document).ready(function() {
             content: formInfoValues[$e.val()],
         }).popover('show');
 	});
-	
+
 	$('#cancel_attribute_add').click(function() {
 		cancelPopoverForm();
-	});	
+	});
 });
 </script>
 <?php echo $this->Js->writeBuffer(); // Write cached scripts

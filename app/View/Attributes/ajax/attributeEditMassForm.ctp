@@ -1,5 +1,5 @@
 <div class="attributes">
-<?php 
+<?php
 	echo $this->Form->create('Attribute', array('url' => '/attributes/editSelected/' . $id));
 ?>
 	<fieldset>
@@ -24,7 +24,7 @@
 				));
 			?>
 				</div>
-			<?php 
+			<?php
 			echo $this->Form->input('to_ids', array(
 					'options' => array('No', 'Yes', 'Do not alter current settings'),
 					'data-content' => isset($attrDescriptions['signature']['formdesc']) ? $attrDescriptions['signature']['formdesc'] : $attrDescriptions['signature']['desc'],
@@ -32,6 +32,8 @@
 					'selected' => 2,
 			));
 			?>
+				<div class="input clear"></div>
+
 				<div class="input clear"></div>
 			<?php
 			echo $this->Form->input('comment', array(
@@ -51,16 +53,16 @@
 			<table>
 				<tr>
 				<td style="vertical-align:top">
-					<span id="submitButton" class="btn btn-primary" onClick="submitPopoverForm('<?php echo $id;?>', 'massEdit')">Submit</span>
+					<span id="submitButton" class="btn btn-primary" title="Submit" role="button" tabindex="0" aria-label="Submit" onClick="submitPopoverForm('<?php echo $id;?>', 'massEdit')">Submit</span>
 				</td>
 				<td style="width:540px;">&nbsp;</td>
 				<td style="vertical-align:top;">
-					<span class="btn btn-inverse" id="cancel_attribute_add">Cancel</span>
+					<span class="btn btn-inverse" title="Cancel" role="button" tabindex="0" aria-label="Cancel" id="cancel_attribute_add">Cancel</span>
 				</td>
 				</tr>
 			</table>
 		</div>
-	<?php 
+	<?php
 		echo $this->Form->end();
 	?>
 </div>
@@ -85,9 +87,9 @@ $(document).ready(function() {
 		if ($('#AttributeDistribution').val() == 4) $('#SGContainer').show();
 		else $('#SGContainer').hide();
 	});
-	
+
 	$('#AttributeAttributeIds').attr('value', getSelected());
-	
+
 	$("#Attribute, #AttributeDistribution").on('mouseover', function(e) {
 	    var $e = $(e.target);
 	    if ($e.is('option')) {
@@ -112,7 +114,7 @@ $(document).ready(function() {
             trigger: 'focus',
             placement: 'right',
             container: 'body',
-        }).popover('show');     
+        }).popover('show');
 	});
 
 	// workaround for browsers like IE and Chrome that do now have an onmouseover on the 'options' of a select.
@@ -131,7 +133,7 @@ $(document).ready(function() {
 	$('#cancel_attribute_add').click(function() {
 		$('#gray_out').fadeOut();
 		$('#popover_form').fadeOut();
-	});	
+	});
 });
 
 </script>

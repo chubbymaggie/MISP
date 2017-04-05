@@ -4,6 +4,7 @@
 if ($isSearch == 1) {
 	echo "<h4>Results for all attributes";
 	if ($keywordSearch != null) echo " with the value containing \"<b>" . h($keywordSearch) . "</b>\"";
+	if ($attributeTags != null) echo " being tagged with \"<b>" . h($attributeTags) . "</b>\"";
 	if ($keywordSearch2 != null) echo " from the events \"<b>" . h($keywordSearch2) . "</b>\"";
 	if ($tags != null) echo " from events tagged \"<b>" . h($tags) . "</b>\"";
 	if ($categorySearch != "ALL") echo " of category \"<b>" . h($categorySearch) . "</b>\"";
@@ -36,6 +37,7 @@ if ($isSearch == 1) {
 			<th><?php echo $this->Paginator->sort('category');?></th>
 			<th><?php echo $this->Paginator->sort('type');?></th>
 			<th><?php echo $this->Paginator->sort('value');?></th>
+			<th>Tags</th>
 			<th><?php echo $this->Paginator->sort('comment');?></th>
 			<th<?php echo ' title="' . $attrDescriptions['signature']['desc'] . '"';?>>
 			<?php echo $this->Paginator->sort('IDS');?></th>
@@ -94,12 +96,27 @@ foreach ($attributes as $attribute):
 			}
 			if ('attachment' == $attribute['Attribute']['type'] || 'malware-sample' == $attribute['Attribute']['type']) {
 				?><a href="<?php echo $baseurl;?>/attributes/download/<?php echo $attribute['Attribute']['id'];?>"><?php echo $sigDisplay; ?></a><?php
-			} elseif ('link' == $attribute['Attribute']['type']) {
-				?><a href="<?php echo $baseurl.h($attribute['Attribute']['value']);?>"><?php echo $sigDisplay; ?></a><?php
+			} else if ('link' == $attribute['Attribute']['type']) {
+				?><a href="<?php echo h($attribute['Attribute']['value']);?>"><?php echo $sigDisplay; ?></a><?php
 			} else {
 				echo $sigDisplay;
 			}
 			?>
+		</td>
+		<td style = "max-width:200px;width:10px;">
+			<?php foreach ($attribute['AttributeTag'] as $tag):
+				$tagText = "&nbsp;";
+				if (Configure::read('MISP.full_tags_on_attribute_index') == 1) $tagText = h($tag['Tag']['name']);
+				else if (Configure::read('MISP.full_tags_on_attribute_index') == 2) {
+					if (strpos($tag['Tag']['name'], '=')) {
+						$tagText = explode('=', $tag['Tag']['name']);
+						$tagText = h(trim(end($tagText), "\""));
+					}
+					else $tagText = h($tag['Tag']['name']);
+				}
+				?>
+				<span class="tag useCursorPointer" style="margin-bottom:3px;background-color:<?php echo h($tag['Tag']['colour']);?>;color:<?php echo $this->TextColour->getTextColour($tag['Tag']['colour']);?>;" title="<?php echo h($tag['Tag']['name']); ?>" role="button" tabindex="0" aria-label="Search events tagged <?php echo h($tag['Tag']['name'])?>" onClick="document.location.href='<?php echo $baseurl; ?>/attributes/search/attributetag:<?php echo h($tag['Tag']['id']);?>';"><?php echo $tagText; ?></span>
+			<?php endforeach; ?>
 		</td>
 		<td ondblclick="document.location ='document.location ='<?php echo $baseurl;?>/events/view/<?php echo $attribute['Event']['id'];?>';">
 			<?php
@@ -114,11 +131,17 @@ foreach ($attributes as $attribute):
 		<td class="short" ondblclick="document.location ='document.location ='/events/view/<?php echo $attribute['Event']['id'];?>';">
 			<?php echo $attribute['Attribute']['to_ids'] ? 'Yes' : 'No'; ?>&nbsp;
 		</td>
-		<td class="short action-links"><?php
-	if ($isAdmin || ($isAclModify && $attribute['Event']['user_id'] == $me['id']) || ($isAclModifyOrg && $attribute['Event']['org_id'] == $me['org_id'])) {
-				?><a href="<?php echo $baseurl;?>/attributes/edit/<?php echo $attribute['Attribute']['id'];?>" class="icon-edit" title="Edit"></a><?php
-		echo $this->Form->postLink('',array('action' => 'delete', $attribute['Attribute']['id']), array('class' => 'icon-trash', 'title' => 'Delete'), __('Are you sure you want to delete this attribute?'));
-	}
+		<td class="short action-links">
+	<?php
+		if ($isSiteAdmin || ($isAclModify && $attribute['Event']['user_id'] == $me['id']) || ($isAclModifyOrg && $attribute['Event']['org_id'] == $me['org_id'])):
+	?>
+			<a href="<?php echo $baseurl;?>/attributes/edit/<?php echo $attribute['Attribute']['id'];?>" class="icon-edit" title="Edit"></a><?php
+			echo $this->Form->postLink('',array('action' => 'delete', $attribute['Attribute']['id']), array('class' => 'icon-trash', 'title' => 'Delete'), __('Are you sure you want to delete this attribute?'));
+		elseif ($isAclModify):
+	?>
+			<a href="<?php echo $baseurl;?>/shadow_attributes/edit/<?php echo $attribute['Attribute']['id'];?>" class="icon-share" title="Propose an edit"></a>
+	<?php
+		endif;
 	?>
 			<a href="<?php echo $baseurl;?>/events/view/<?php echo $attribute['Attribute']['event_id'];?>" class="icon-list-alt" title="View"></a>
 		</td>
@@ -153,7 +176,7 @@ if ($isSearch == 1){
 	$class = 'listAttributes';
 }
 ?>
-<?php 
+<?php
 	echo $this->element('side_menu', array('menuList' => 'event-collection', 'menuItem' => $class));
 ?>
 <script type="text/javascript">

@@ -2,7 +2,7 @@
 $mayModify = (($isAclModify && $event['Event']['user_id'] == $me['id'] && $event['Orgc']['id'] == $me['org_id']) || ($isAclModifyOrg && $event['Orgc']['id'] == $me['org_id']));
 $mayPublish = ($isAclPublish && $event['Orgc']['id'] == $me['org_id']);
 ?>
-<?php echo $this->Html->script('d3.min');?>
+<?php echo $this->Html->script('d3');?>
 <style>
 
 	.node circle {
@@ -14,7 +14,7 @@ $mayPublish = ($isAclPublish && $event['Orgc']['id'] == $me['org_id']);
 		font: 10px sans-serif;
 		pointer-events: none;
 		text-anchor: middle;
-	}	
+	}
 	line.link {
 		fill: none;
 		stroke: #9ecae1;
@@ -74,6 +74,10 @@ $mayPublish = ($isAclPublish && $event['Orgc']['id'] == $me['org_id']);
 	<li id="attribute-info-pane-type"></li>
 	<li id="attribute-info-pane-comment"></li>
 </ul>
+<ul id="tag-info-pane" class="menu" style="width:200px;">
+	<li id="tag-info-pane-title" style="background-color:#0088cc;color:white;"></li>
+	<li id="tag-info-pane-name"></li>
+</ul>
 </div>
 <?php
 	echo $this->element('side_menu', array('menuList' => 'event', 'menuItem' => 'viewEventGraph', 'mayModify' => $mayModify, 'mayPublish' => $mayPublish));
@@ -90,7 +94,7 @@ width = $(window).width() - margin.left - margin.right,
 height = $(window).height() - 200 - margin.top - margin.bottom;
 
 var root;
-    
+
 var force = d3.layout.force()
     .linkDistance(150)
     .linkStrength(0.9)
@@ -113,7 +117,7 @@ var rect = svg.append("svg:rect")
 	.attr('height', height)
 	.attr('fill', 'white')
 	.call(d3.behavior.zoom().on("zoom", zoomhandler));
-		
+
 var plotting_area = svg.append("g")
 		.attr("class", "plotting-area");
 
@@ -140,11 +144,11 @@ function zoomhandler() {
 	graphElementScale = d3.event.scale;
 	graphElementTranslate = d3.event.translate;
 }
-	
+
 function update() {
 	var nodes = root['nodes'], links = root['links'];
 
-	 
+
 	// Restart the force layout.
 	force.nodes(nodes).links(links).start();
 
@@ -184,15 +188,15 @@ function update() {
 		.attr("dy", ".35em")
 		.attr("fill", function(d) {
 			if (d.type == "event") {
-				if(d.expanded == 1) {
+				if (d.expanded == 1) {
 					return "#0000ff";
 				} else {
 					return "#ff0000";
 				}
 			}
 		})
-		.text(function(d) { 
-			return d.name; 
+		.text(function(d) {
+			return d.name;
 		});
 
 	node.selectAll("text")
@@ -227,7 +231,7 @@ function update() {
 
 function contextMenu(d, newContext) {
 	d3.event.preventDefault();
-	// hide all other panes 
+	// hide all other panes
 	if (d.type == 'event') {
 		showPane('#context-menu', d, 'right')
 		d3.select('#expand')
@@ -241,6 +245,7 @@ function showPane(context, d, side) {
 	d3.select('#attribute-info-pane').style('display', 'none');
 	d3.select('#context-menu').style('display', 'none');
 	d3.select('#event-info-pane').style('display', 'none');
+	d3.select('#tag-info-pane').style('display', 'none');
 	var offset = (graphElementScale * 24) + 6;
 	var offsety = -10;
 	if (side == 'left') {
@@ -270,7 +275,10 @@ function showPane(context, d, side) {
 		$('#event-info-pane-analysis').text('Analysis: ' + d.analysis);
 		$('#event-info-pane-org').text('Organisation: ' + d.org);
 		$('#event-info-pane-url').attr('href', '/events/' + tempid);
-		$('#event-info-pane-url').text('Go to event'); 
+		$('#event-info-pane-url').text('Go to event');
+	}
+	if (d.type == 'tag') {
+		$('#tag-info-pane-title').text('Tag: ' + d.name);
 	}
 }
 
@@ -322,7 +330,7 @@ function dragmove(d, i) {
 	d.px += d3.event.dx;
 	d.py += d3.event.dy;
 	d.x += d3.event.dx;
-	d.y += d3.event.dy; 
+	d.y += d3.event.dy;
 	tick();
 }
 

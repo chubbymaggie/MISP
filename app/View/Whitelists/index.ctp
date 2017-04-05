@@ -1,5 +1,6 @@
 <div class="whitelist index">
 	<h2>Signature Whitelist</h2>
+	<p>Regex entries (in the standard php regex /{regex}/{modifier} format) entered below will restrict matching attributes from being included in the IDS flag sensitive exports (such as NIDS exports).</p>
 	<div class="pagination">
         <ul>
         <?php
@@ -45,6 +46,6 @@ endforeach;?>
         </ul>
     </div>
 </div>
-<?php 
+<?php
 	echo $this->element('side_menu', array('menuList' => 'whitelist', 'menuItem' => 'index'));
 ?>
